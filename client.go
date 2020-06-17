@@ -231,7 +231,7 @@ func (co *Conn) ReadMsgHeader(hdr *Header) ([]byte, error) {
 		err error
 	)
 
-	if _, ok := co.Conn.(net.PacketConn); ok {
+	if _, ok := co.Conn.(*net.UDPConn); ok {
 		if co.UDPSize > MinMsgSize {
 			p = make([]byte, co.UDPSize)
 		} else {
@@ -271,7 +271,7 @@ func (co *Conn) Read(p []byte) (n int, err error) {
 		return 0, ErrConnEmpty
 	}
 
-	if _, ok := co.Conn.(net.PacketConn); ok {
+	if _, ok := co.Conn.(*net.UDPConn); ok {
 		// UDP connection
 		return co.Conn.Read(p)
 	}
@@ -316,7 +316,7 @@ func (co *Conn) Write(p []byte) (int, error) {
 		return 0, &Error{err: "message too large"}
 	}
 
-	if _, ok := co.Conn.(net.PacketConn); ok {
+	if _, ok := co.Conn.(*net.UDPConn); ok {
 		return co.Conn.Write(p)
 	}
 
